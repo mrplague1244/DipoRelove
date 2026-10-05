@@ -18,6 +18,7 @@ let items=[
 let reqs=[{id:1,item:'Koran dan majalah lama',who:'Bima',ok:false},{id:2,item:'Koran dan majalah lama',who:'Kopi Nusa',ok:false}];
 let nid=11;
 
+const ph=(i,x='')=>i.img?`<img class="ph ${x}" src="${i.img}" alt="${esc(i.title)}">`:`<div class="ph ${x}" style="background:${CATS[i.cat]}">${i.cat[0]}</div>`;
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
 function modal(html){dlg.innerHTML='<button class="x" aria-label="Tutup" onclick="dlg.close()">×</button>'+html;if(!dlg.open)dlg.showModal()}
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -49,7 +50,7 @@ function renderFilters(){
 }
 function renderGrid(){
  const l=items.filter(i=>(!active.size||active.has(i.cat))&&(i.title+i.cat+i.loc).toLowerCase().includes(query));
- $('#grid').innerHTML=l.length?l.map(i=>`<article class="item"><div class="ph" style="background:${CATS[i.cat]}">${i.cat[0]}</div>
+ $('#grid').innerHTML=l.length?l.map(i=>`<article class="item">${ph(i)}
   <div class="b"><span class="tag">${i.cat}</span><h3>${esc(i.title)}</h3><small>${esc(i.loc)} · ${esc(i.time)}</small>
   <div class="row"><button class="btn ghost sm" data-d="${i.id}">Detail</button><button class="btn sm" data-t="${i.id}">Ambil</button></div></div></article>`).join('')
   :'<p class="empty">Belum ada item yang cocok. Coba ubah filter atau kata kunci.</p>';
@@ -59,7 +60,7 @@ $('#grid').onclick=e=>{const d=e.target.dataset.d,t=e.target.dataset.t;
 $('#q').oninput=e=>{query=e.target.value.toLowerCase();renderGrid()};
 
 function detail(id){const i=items.find(x=>x.id===id);
- modal(`<h3>${esc(i.title)}</h3><div class="ph" style="background:${CATS[i.cat]};border-radius:10px;margin-bottom:10px">${i.cat[0]}</div>
+ modal(`<h3>${esc(i.title)}</h3>${ph(i,'r')}
  <p><span class="tag">${i.cat}</span><br>${esc(i.desc||'')}</p><p><small>Lokasi: ${esc(i.loc)}<br>Waktu: ${esc(i.time)}<br>Pemilik: ${esc(i.owner)}</small></p>
  <button class="btn" style="width:100%" onclick="requireLogin(()=>take(${id}))">Ambil item ini</button>`)}
 
@@ -82,7 +83,13 @@ function renderDash(){
 }
 $('#reqs').onclick=e=>{const a=e.target.dataset.a;if(a){reqs.find(r=>r.id==a).ok=true;renderDash();toast('Permintaan disetujui')}};
 $('#mine').onclick=e=>{const x=e.target.dataset.x;if(x){items=items.filter(i=>i.id!=x);renderDash();renderGrid();toast('Item dihapus')}};
-$('#upForm').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
- items.unshift({id:nid++,...f,owner:ME,mine:true});e.target.reset();renderDash();renderGrid();toast('Item berhasil diunggah')};
+let img='';
+$('#photo').onchange=e=>{const f=e.target.files[0];
+ if(!f)return clr();
+ if(!f.type.startsWith('image/')||f.size>5e6){e.target.value='';clr();return toast('Pilih file gambar maksimal 5 MB')}
+ img=URL.createObjectURL(f);$('#prev').src=img;$('#prev').hidden=false};
+function clr(){img='';$('#prev').hidden=true;$('#prev').removeAttribute('src')}
+$('#upForm').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));delete f.photo;
+ items.unshift({id:nid++,...f,img,owner:ME,mine:true});e.target.reset();clr();renderDash();renderGrid();toast('Item berhasil diunggah')};
 
 renderFilters();renderGrid();renderDash();authUI();route();
