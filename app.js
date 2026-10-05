@@ -51,7 +51,7 @@ function renderFilters(){
 function renderGrid(){
  const l=items.filter(i=>(!active.size||active.has(i.cat))&&(i.title+i.cat+i.loc).toLowerCase().includes(query));
  $('#grid').innerHTML=l.length?l.map(i=>`<article class="item">${ph(i)}
-  <div class="b"><span class="tag">${i.cat}</span><h3>${esc(i.title)}</h3><small>${esc(i.loc)} · ${esc(i.time)}</small>
+  <div class="b"><div class="tags"><span class="tag">${i.cat}</span>${i.mine?'<span class="tag mine">Postinganmu</span>':''}</div><h3>${esc(i.title)}</h3><small>${esc(i.loc)} · ${esc(i.time)}</small>
   <div class="row"><button class="btn ghost sm" data-d="${i.id}">Detail</button><button class="btn sm" data-t="${i.id}">Ambil</button></div></div></article>`).join('')
   :'<p class="empty">Belum ada item yang cocok. Coba ubah filter atau kata kunci.</p>';
 }
@@ -79,7 +79,7 @@ function renderDash(){
  $('#reqs').innerHTML=reqs.length?reqs.map(r=>`<li><span>${esc(r.who)}<small>ingin mengambil ${esc(r.item)}</small></span>
   ${r.ok?'<small>Disetujui</small>':`<button class="btn sm" data-a="${r.id}">Setujui</button>`}</li>`).join(''):'<li>Belum ada permintaan.</li>';
  const m=items.filter(i=>i.mine);
- $('#mine').innerHTML=m.length?m.map(i=>`<li><span>${esc(i.title)}<small>${i.cat} · ${esc(i.loc)}</small></span><button class="btn ghost sm" data-x="${i.id}">Hapus</button></li>`).join(''):'<li>Kamu belum mengunggah item.</li>';
+ $('#mine').innerHTML=m.length?m.map(i=>`<li><span class="th">${i.img?`<img src="${i.img}" alt="">`:`<i style="background:${CATS[i.cat]}"></i>`}<span>${esc(i.title)}<small>${i.cat} · ${esc(i.loc)}</small></span></span><button class="btn ghost sm" data-x="${i.id}">Hapus</button></li>`).join(''):'<li>Kamu belum mengunggah item.</li>';
 }
 $('#reqs').onclick=e=>{const a=e.target.dataset.a;if(a){reqs.find(r=>r.id==a).ok=true;renderDash();toast('Permintaan disetujui')}};
 $('#mine').onclick=e=>{const x=e.target.dataset.x;if(x){items=items.filter(i=>i.id!=x);renderDash();renderGrid();toast('Item dihapus')}};
@@ -90,6 +90,6 @@ $('#photo').onchange=e=>{const f=e.target.files[0];
  img=URL.createObjectURL(f);$('#prev').src=img;$('#prev').hidden=false};
 function clr(){img='';$('#prev').hidden=true;$('#prev').removeAttribute('src')}
 $('#upForm').onsubmit=e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));delete f.photo;
- items.unshift({id:nid++,...f,img,owner:ME,mine:true});e.target.reset();clr();renderDash();renderGrid();toast('Item berhasil diunggah')};
+ items.unshift({id:nid++,...f,img,owner:ME,mine:true});e.target.reset();clr();renderDash();renderGrid();route('home');setTimeout(()=>$('#grid').scrollIntoView({behavior:'smooth'}),50);toast('Item berhasil diunggah dan tampil di Beranda')};
 
 renderFilters();renderGrid();renderDash();authUI();route();
