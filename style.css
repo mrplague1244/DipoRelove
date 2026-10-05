@@ -54,3 +54,6 @@ dialog h3{margin-top:0}.x{float:right;background:none;border:0;font-size:1.5rem;
  nav{order:3;flex-basis:100%}.map{height:150px}}
 @media(max-width:480px){.actions{margin-left:auto}.btn{padding:7px 12px}.stats{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.filters label{align-items:center;margin:0;padding:6px 0;font-weight:500;font-size:.92rem}
+.filters input[type=checkbox]{width:18px;height:18px;flex:none;margin:0;padding:0;accent-color:var(--g)}
+@media(max-width:800px){.filters label{padding:6px 12px 6px 0}}
