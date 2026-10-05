@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DipoRelove – Beri barang bekas hidup kedua</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#/">Dipo<b>Relove</b></a>
+  <nav id="nav">
+    <a href="#/" data-r="home">Beranda</a>
+    <a href="#/dashboard" data-r="dashboard">Dashboard</a>
+  </nav>
+  <div class="actions">
+    <button class="btn ghost" id="btnUpload">Unggah item</button>
+    <button class="btn" id="btnAuth">Login</button>
+  </div>
+</header>
+
+<main id="home" class="view">
+  <section class="hero">
+    <h1>Barang yang tak terpakai di kosmu, berguna untuk orang lain di Semarang.</h1>
+    <p>Pilih item di sekitarmu, hubungi pemiliknya, lalu ambil. Gratis.</p>
+    <div class="search"><input id="q" type="search" placeholder="Cari kardus, kayu, kain…" aria-label="Cari item"></div>
+  </section>
+  <section class="map" aria-label="Peta item">
+    <div class="mapnote">Peta Sampah Semarang (prototipe)</div>
+    <span class="pin" style="left:14%;top:30%"></span><span class="pin" style="left:38%;top:62%"></span>
+    <span class="pin" style="left:57%;top:28%"></span><span class="pin" style="left:76%;top:58%"></span>
+    <span class="pin" style="left:88%;top:25%"></span>
+  </section>
+  <section class="browse">
+    <aside class="filters" id="filters"></aside>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section class="stats">
+    <div><strong>1.240 kg</strong><span>sampah berkurang</span></div>
+    <div><strong>38</strong><span>mitra UMKM aktif</span></div>
+    <div><strong>412</strong><span>item sudah diambil</span></div>
+  </section>
+</main>
+
+<main id="dashboard" class="view" hidden>
+  <h2>Dashboard</h2>
+  <div class="dash">
+    <form id="upForm" class="card">
+      <h3>Unggah item</h3>
+      <label>Judul item<input name="title" required placeholder="Contoh: Kardus bekas pindahan"></label>
+      <label>Kategori<select name="cat" id="catSel"></select></label>
+      <label>Lokasi<input name="loc" required placeholder="Contoh: Tembalang, dekat gerbang Undip"></label>
+      <label>Waktu pengambilan<input name="time" required placeholder="Contoh: Hari ini 16.00–19.00"></label>
+      <label>Deskripsi<textarea name="desc" rows="3" placeholder="Kondisi dan jumlah barang"></textarea></label>
+      <button class="btn" type="submit">Unggah item</button>
+    </form>
+    <div>
+      <div class="card"><h3>Permintaan masuk</h3><ul class="list" id="reqs"></ul></div>
+      <div class="card"><h3>Item saya</h3><ul class="list" id="mine"></ul></div>
+    </div>
+  </div>
+</main>
+
+<footer class="foot"><span>Tentang DipoRelove · Panduan Pengguna · Kontak</span><span>© 2026 DipoRelove</span></footer>
+<dialog id="dlg"></dialog>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+</body>
+</html>
