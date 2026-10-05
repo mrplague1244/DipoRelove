@@ -1,5 +1,7 @@
 const $=s=>document.querySelector(s), dlg=$('#dlg');
-const CATS={Plastik:'#2f8f9d',Kertas:'#c58a3a',Kain:'#a0568c',Kayu:'#7a5230',UMKM:'#1d6b3e',Industri:'#5b6b7a',Lainnya:'#8a8f55'};
+const GROUPS={'Barang bekas mahasiswa':{'Buku & Alat Tulis':'#3b6fb6','Elektronik':'#4a4fa3','Furnitur Kos':'#8a5a3c','Perabot Dapur':'#c2603a','Pakaian':'#a0568c','Perlengkapan Kuliah':'#2f8f7d'},
+ 'Sampah & bahan daur ulang':{Plastik:'#2f8f9d',Kertas:'#c58a3a',Kain:'#7d6aa8',Kayu:'#7a5230',UMKM:'#1d6b3e',Industri:'#5b6b7a',Lainnya:'#8a8f55'}};
+const CATS=Object.assign({},...Object.values(GROUPS));
 const ME='Rani (demo)';
 let user=null, after=null, active=new Set(), query='';
 let items=[
@@ -8,9 +10,13 @@ let items=[
  {id:3,title:'Sisa kain perca konveksi',cat:'Kain',loc:'Pedurungan',time:'Sabtu 10.00',owner:'Konveksi Sari',desc:'Aneka warna, cocok untuk kerajinan.'},
  {id:4,title:'Potongan kayu palet',cat:'Kayu',loc:'Gajahmungkur',time:'Hari ini 14.00–17.00',owner:'Bengkel Jati',desc:'6 palet, bisa dibongkar.'},
  {id:5,title:'Sisa kemasan produk UMKM',cat:'UMKM',loc:'Tembalang',time:'Minggu sore',owner:'Kopi Nusa',desc:'Pouch dan box cetak, belum terpakai.'},
+ {id:7,title:'Rak buku kayu bekas kos',cat:'Furnitur Kos',loc:'Tembalang',time:'Sabtu 13.00',owner:'Alvin',desc:'3 tingkat, masih kokoh. Ambil sendiri.'},
+ {id:8,title:'Buku kuliah Akuntansi Dasar',cat:'Buku & Alat Tulis',loc:'Undip Pleburan',time:'Hari ini 15.00',owner:'Nadia',desc:'Edisi lama, ada coretan pensil.'},
+ {id:9,title:'Rice cooker mini',cat:'Perabot Dapur',loc:'Banyumanik',time:'Minggu pagi',owner:'Fajar',desc:'Masih menyala, kapasitas 0,6 L.'},
+ {id:10,title:'Kipas angin meja',cat:'Elektronik',loc:'Tembalang',time:'Besok sore',owner:'Tiara',desc:'Lulus kuliah, kipas masih normal.'},
  {id:6,title:'Koran dan majalah lama',cat:'Kertas',loc:'Candisari',time:'Besok 09.00',owner:ME,desc:'Satu kardus penuh.',mine:true}];
 let reqs=[{id:1,item:'Koran dan majalah lama',who:'Bima',ok:false},{id:2,item:'Koran dan majalah lama',who:'Kopi Nusa',ok:false}];
-let nid=7;
+let nid=11;
 
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2200)}
 function modal(html){dlg.innerHTML='<button class="x" aria-label="Tutup" onclick="dlg.close()">×</button>'+html;if(!dlg.open)dlg.showModal()}
@@ -37,9 +43,9 @@ function route(r){
 addEventListener('hashchange',()=>route());
 
 function renderFilters(){
- $('#filters').innerHTML='<h3>Filter</h3>'+Object.keys(CATS).map(c=>`<label><input type="checkbox" value="${c}"> ${c}</label>`).join('');
+ $('#filters').innerHTML='<h3>Filter</h3>'+Object.entries(GROUPS).map(([g,c])=>`<h4>${g}</h4>`+Object.keys(c).map(k=>`<label><input type="checkbox" value="${k}"> ${k}</label>`).join('')).join('');
  $('#filters').onchange=e=>{e.target.checked?active.add(e.target.value):active.delete(e.target.value);renderGrid()};
- $('#catSel').innerHTML=Object.keys(CATS).map(c=>`<option>${c}</option>`).join('');
+ $('#catSel').innerHTML=Object.entries(GROUPS).map(([g,c])=>`<optgroup label="${g}">`+Object.keys(c).map(k=>`<option>${k}</option>`).join('')+'</optgroup>').join('');
 }
 function renderGrid(){
  const l=items.filter(i=>(!active.size||active.has(i.cat))&&(i.title+i.cat+i.loc).toLowerCase().includes(query));
